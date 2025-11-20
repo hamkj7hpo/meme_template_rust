@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MEME TEMPLATE v4 — Create & Handshake</title>
+  <style>
+    body { font-family: 'Courier New'; background: #000; color: #0f0; padding: 20px; }
+    .card { background: #111; border: 1px solid #0f0; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    button { background: #0f0; color: #000; padding: 10px; margin: 5px; border: none; cursor: pointer; }
+    input { background: #222; color: #0f0; border: 1px solid #0f0; padding: 8px; width: 100%; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>MEME TEMPLATE v4 — SPMP HANDSHAKE</h1>
+  <input id="name" placeholder="Token Name" />
+  <input id="symbol" placeholder="Ticker (e.g. DOGE)" />
+  <button onclick="create()">CREATE TOKEN & HANDSHAKE</button>
+  <button onclick="rotate()">ROTATE KEYS</button>
+
+  <div id="result"></div>
+
+  <script type="module">
+    import init, { MemeTemplateClient } from './pkg/meme_template_client.js';
+    let client;
+
+    window.create = async () => {
+      await init();
+      client = new MemeTemplateClient();
+      const name = document.getElementById('name').value || "MyMeme";
+      const symbol = document.getElementById('symbol').value || "MEME";
+      const result = client.create_token_and_handshake(name, symbol);
+      document.getElementById('result').innerHTML = `
+        <div class="card">SUCCESS!</div>
+        <div class="card">Vanity ID: <b>${result.vanity_program_id}</b></div>
+        <div class="card">SPMP Mint: <b>${result.spmp_mint}</b></div>
+        <div class="card">Rotator PK: <b>${result.rotator_pk}</b></div>
+      `;
+    };
+
+    window.rotate = () => {
+      if (client && client.rotate_keys()) {
+        alert("Keys rotated!");
+      }
+    };
+  </script>
+</body>
+</html>
